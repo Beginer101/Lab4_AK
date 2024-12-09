@@ -1,0 +1,27 @@
+    1  mkdir ~/lab4
+    2  cd ~/lab4
+    3  nano hello.c
+    4  nano Makefile
+    5  export KDIR=$HOME/repos/linux-stable
+    6  make
+    7  cd ~/repos/linux-stable
+    8  make clean
+    9  git checkout linux-4.19.y
+   10  export PATH=/opt/gcc-arm-8.3-2019.03-x86_64-arm-eabi/bin:   	$PATH
+   11  export CROSS_COMPILE='ccache arm-eabi-'
+   12  export ARCH=arm
+   13  ./scripts/kconfig/merge_config.sh arch/arm/configs/multi_v7_defconfig fragments/bbb.cfg
+   14  make -j4 zImage modules am335x-boneblack.dtb
+   15  cd ~/lab4
+   16  export KDIR=$HOME/repos/linux-stable
+   17  make
+   18  ls
+   19  mv hello.ko ~/repos/busybox/_install
+   20  ls
+   21  cd ~/repos/busybox/_install
+   22  ls
+   23  find . | cpio -o -H newc | gzip > ../rootfs.cpio.gz
+   24  cd ~/repos/busybox
+   25  qemu-system-arm -kernel _install/boot/zImage -initrd rootfs.cpio.gz -machine virt -nographic -m 512 --append "root=/dev/ram0 rw console=ttyAMA0,115200 mem=512M"
+   26  cd ~
+   27  history > history4.txt
